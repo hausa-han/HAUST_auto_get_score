@@ -9,7 +9,7 @@ url = {
     'loginurl':'http://jxglxt2.haust.edu.cn/_data/index_LOGIN.aspx',
     'before_getscore_url':'http://jxglxt2.haust.edu.cn/xscj/Stu_MyScore.aspx',
     'scoretexturl':'http://jxglxt2.haust.edu.cn//xscj/Stu_MyScore_rpt.aspx',
-    'scorepicurl':'http://jxglxt2.haust.edu.cn/xscj/Stu_MyScore_Drawimg.aspx?x=1&h=2&w=726&xnxq=20191&xn=2019&xq=1&rpt=1&rad=2&zfx=0&xh=201900002719'
+    'scorepicurl':'http://jxglxt2.haust.edu.cn/xscj/Stu_MyScore_Drawimg.aspx?x=1&h=2&w=726&xnxq=20191&xn=2019&xq=1&rpt=1&rad=2&zfx=0&xh='
     }
 
 login_header = {
@@ -113,10 +113,15 @@ def sorry():
 
 def setscoredata():
     r = requests.get(url['before_getscore_url'], headers=before_getscore_header).text
+    #print(r)
     sel_xn = re.findall(r'value=\'([^"]+)\'', r)
     scoredata['sel_xn'] = sel_xn[0][0:4]
     sel_xq = re.findall(r'Col2\[0\]=\'([^"]+)\'', r)
     scoredata['sel_xq'] = sel_xq[0][0:1]
+    txt_xm = re.findall(r'name=\"txt_xm\"([^"]+)', r)
+    txt_xm = txt_xm[0][7:19]
+    scoredata['txt_xm'] = txt_xm
+    url['scorepicurl'] += txt_xm
 
 def getscore():
     setscoredata()
@@ -177,4 +182,3 @@ if __name__ == '__main__':
         f.write(passwd)
     setcookie(getcookie())
     login(stuID, passwd)
-        
